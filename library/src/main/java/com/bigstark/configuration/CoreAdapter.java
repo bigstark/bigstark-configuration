@@ -15,6 +15,13 @@ public abstract class CoreAdapter<T> extends RecyclerView.Adapter<CoreViewHolder
 
     private List<T> items = new ArrayList<>();
     private Consumer<T> itemClickConsumer;
+    private Consumer<T> itemClickConsumerInternal = (t) -> {
+        if (itemClickConsumer == null) {
+            return;
+        }
+
+        itemClickConsumer.accept(t);
+    };
 
     public void addItem(T item) {
         this.items.add(item);
@@ -68,7 +75,7 @@ public abstract class CoreAdapter<T> extends RecyclerView.Adapter<CoreViewHolder
 
     @Override
     public void onBindViewHolder(CoreViewHolder holder, int position) {
-        holder.bindItem(items.get(position), itemClickConsumer);
+        holder.bindItem(items.get(position), itemClickConsumerInternal);
     }
 
     @Override
