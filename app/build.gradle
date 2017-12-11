@@ -30,9 +30,10 @@ dependencies {
 
     implementation(project(":library")) {
         exclude group: 'com.android.support'
-        exclude group: 'android.arch.lifecycle'
         exclude group: 'com.jakewharton.rxbinding2'
     }
+
+//    compile 'com.github.bigstark:bigstark-configuration:1.0.0'
 
     implementation "android.arch.lifecycle:extensions:1.0.0"
 
