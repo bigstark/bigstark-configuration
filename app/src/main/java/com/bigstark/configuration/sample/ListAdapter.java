@@ -18,14 +18,62 @@ import io.reactivex.functions.Consumer;
 
 public class ListAdapter extends CoreAdapter<Integer> {
 
+
     @Override
-    public CoreViewHolder<Integer> onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        if (viewType == -1) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_header, parent, false);
+            return new HeaderViewHolder(itemView);
+        }
+
+        if (viewType == -2) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_footer, parent, false);
+            return new FooterViewHolder(itemView);
+        }
+
+        return super.onCreateViewHolder(parent, viewType);
+    }
+
+    @Override
+    public CoreViewHolder<Integer> onCreateItemViewHolder(ViewGroup parent) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_item, parent, false);
         return new ListViewHolder(itemView);
     }
 
+    @Override
+    protected int getHeaderCount() {
+        return 1;
+    }
 
-    public class ListViewHolder extends CoreViewHolder<Integer> {
+    @Override
+    protected int getFooterCount() {
+        return 1;
+    }
+
+    @Override
+    public int getHeaderItemViewType(int headerPosition) {
+        return -1;
+    }
+
+    @Override
+    public int getFooterItemViewType(int footerPosition) {
+        return -2;
+    }
+
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    static class FooterViewHolder extends RecyclerView.ViewHolder {
+        public FooterViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    static class ListViewHolder extends CoreViewHolder<Integer> {
 
         private TextView tvPosition;
 

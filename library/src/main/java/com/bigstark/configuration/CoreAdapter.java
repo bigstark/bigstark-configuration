@@ -1,6 +1,7 @@
 package com.bigstark.configuration;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,9 @@ import io.reactivex.functions.Consumer;
  * Created by gangdaegyu on 2017. 12. 8..
  */
 
-public abstract class CoreAdapter<T> extends RecyclerView.Adapter<CoreViewHolder<T>> {
+public abstract class CoreAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    public static final int DEFAULT_ITEM_VIEW_TYPE = 1000;
 
     private List<T> items = new ArrayList<>();
     private Consumer<T> itemClickConsumer;
@@ -73,15 +76,85 @@ public abstract class CoreAdapter<T> extends RecyclerView.Adapter<CoreViewHolder
         this.itemClickConsumer = consumer;
     }
 
+
     @Override
-    public void onBindViewHolder(CoreViewHolder holder, int position) {
-        holder.bindItem(items.get(position), itemClickConsumerInternal);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == DEFAULT_ITEM_VIEW_TYPE) {
+            return onCreateItemViewHolder(parent);
+        }
+
+        return null;
     }
+
+
+    public CoreViewHolder<T> onCreateItemViewHolder(ViewGroup parent) {
+        return null;
+    }
+
+
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (position < getHeaderCount()) {
+            onBindHeaderViewHolder(holder, position);
+            return;
+        }
+
+        if (position < items.size() + getHeaderCount()) {
+            onBindItemViewHolder((CoreViewHolder<T>) holder, position - getHeaderCount());
+            return;
+        }
+
+        onBindFooterViewHolder(holder, position - getHeaderCount() - items.size());
+    }
+
+
+    protected void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int headerPosition) {}
+
+
+    protected void onBindItemViewHolder(CoreViewHolder<T> holder, int itemPosition) {
+        holder.bindItem(items.get(itemPosition), itemClickConsumer);
+    }
+
+
+    protected void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int footerPosition) {}
+
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return getHeaderCount() + items.size() + getFooterCount();
     }
 
 
+    protected int getHeaderCount() {
+        return 0;
+    }
+
+
+    protected int getFooterCount() {
+        return 0;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position < getHeaderCount()) {
+            return getHeaderItemViewType(position);
+        }
+
+        if (position < items.size() + getHeaderCount()) {
+            return DEFAULT_ITEM_VIEW_TYPE;
+        }
+
+
+        return getFooterItemViewType(position - getHeaderCount() - items.size());
+    }
+
+    public int getHeaderItemViewType(int headerPosition) {
+        return 0;
+    }
+
+
+    public int getFooterItemViewType(int footerPosition) {
+        return 0;
+    }
 }
