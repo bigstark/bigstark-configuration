@@ -74,9 +74,10 @@ public abstract class CoreAdapter<T> extends RecyclerView.Adapter<CoreViewHolder
     }
 
     @Override
-    public void onBindViewHolder(CoreViewHolder holder, int position) {
+    public void onBindViewHolder(CoreViewHolder<T> holder, int position) {
         holder.bindItem(items.get(position), itemClickConsumerInternal);
     }
+
 
     @Override
     public int getItemCount() {
