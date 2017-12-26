@@ -1,14 +1,20 @@
 package com.bigstark.configuration;
 
+import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.jakewharton.rxbinding2.view.RxView;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import io.reactivex.functions.Action;
 
@@ -17,6 +23,8 @@ import io.reactivex.functions.Action;
  */
 
 public class CoreFrame implements LifecycleObserver, LifecycleOwner {
+
+    private Set<CoreFrame> frames = new HashSet<>();
 
     private LifecycleRegistry registry;
     private Lifecycle lifecycle;
@@ -28,6 +36,29 @@ public class CoreFrame implements LifecycleObserver, LifecycleOwner {
         this.lifecycle = lifecycle;
         this.registry = new LifecycleRegistry(this);
     }
+
+    protected void addFrame(CoreFrame frame) {
+        getLifecycle().addObserver(frame);
+        frames.add(frame);
+    }
+
+    protected void removeFrame(CoreFrame frame) {
+        getLifecycle().removeObserver(frame);
+        frames.remove(frame);
+    }
+
+    protected Context getContext() {
+        return contentView == null ? null : contentView.getContext();
+    }
+
+    protected void startActivity(Intent intent) {
+        getContext().startActivity(intent);
+    }
+
+    protected void startActivityForResult(Intent intent, int requestCode) {
+        ((Activity) getContext()).startActivityForResult(intent, requestCode);
+    }
+
 
     public void subscribeItemClick(int viewId, Action action) {
         RxView.clicks(contentView.findViewById(viewId))
@@ -75,6 +106,10 @@ public class CoreFrame implements LifecycleObserver, LifecycleOwner {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onLifecycleDestroy() {
+        for (CoreFrame frame : frames) {
+            getLifecycle().removeObserver(frame);
+        }
+        frames.clear();
         registry.markState(Lifecycle.State.DESTROYED);
 
         contentView = null;
