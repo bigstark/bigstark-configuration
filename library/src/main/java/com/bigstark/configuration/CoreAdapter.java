@@ -78,6 +78,22 @@ public abstract class CoreAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
 
     @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == DEFAULT_ITEM_VIEW_TYPE) {
+            return onCreateItemViewHolder(parent);
+        }
+
+        return null;
+    }
+
+
+    public CoreViewHolder<T> onCreateItemViewHolder(ViewGroup parent) {
+        return null;
+    }
+
+
+
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position < getHeaderCount()) {
             onBindHeaderViewHolder(holder, position);
@@ -96,7 +112,9 @@ public abstract class CoreAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     protected void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int headerPosition) {}
 
 
-    protected abstract void onBindItemViewHolder(CoreViewHolder<T> holder, int itemPosition);
+    protected void onBindItemViewHolder(CoreViewHolder<T> holder, int itemPosition) {
+        holder.bindItem(items.get(itemPosition), itemClickConsumer);
+    }
 
 
     protected void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int footerPosition) {}
