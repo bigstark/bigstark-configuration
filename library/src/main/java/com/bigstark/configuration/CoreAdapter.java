@@ -113,7 +113,7 @@ public abstract class CoreAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
 
     protected void onBindItemViewHolder(CoreViewHolder<T> holder, int itemPosition) {
-        holder.bindItem(items.get(itemPosition), itemClickConsumer);
+        holder.bindItem(items.get(itemPosition), itemClickConsumerInternal);
     }
 
 
