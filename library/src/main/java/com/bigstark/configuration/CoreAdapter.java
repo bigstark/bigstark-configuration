@@ -67,10 +67,17 @@ public abstract class CoreAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
-    public void clear(List<T> items) {
+    public void clear() {
         this.items.clear();
         notifyDataSetChanged();
     }
+
+
+    public List<T> getItems() {
+        return items;
+    }
+
+    
 
     public void subscribeItemClick(Consumer<T> consumer) {
         this.itemClickConsumer = consumer;
