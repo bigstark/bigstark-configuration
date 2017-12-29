@@ -14,7 +14,7 @@ allprojects {
 ```
 ```
 dependencies {
-    compile 'com.github.bigstark:bigstark-configuration:1.1.0'
+    compile 'com.github.bigstark:bigstark-configuration:1.2.2'
 }
 ```
 
